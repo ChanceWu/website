@@ -1,0 +1,22 @@
+{
+  "name": "website",
+  "description": "a simple website",
+  "main": "app.js",
+  "authors": [
+    "Chance <1565222098@qq.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ChanceWu/website",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "jquery": "^3.3.1"
+  }
+}

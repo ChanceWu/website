@@ -3,7 +3,8 @@ extends ../layout
 block content
 	.container
 		.row
-			form.form-horizontal.col(method="post", action="/admin/movie")
+			form.form-horizontal.col(method="post", action="/admin/movie/new")
+				input(type="hidden", name="movie[_id]", value="#{movie._id}")
 				.form-group.row
 					label.col-sm-2.col-form-label.text-right(for="inputTitle") 电影名字
 					.col-sm-10
