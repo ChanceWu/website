@@ -1,5 +1,17 @@
 var User = require('../models/user');
 
+exports.showSignup = function(req, res) {
+	res.render('signup', {
+		title: '注册页面'
+	})
+}
+
+exports.showSignin = function(req, res) {
+	res.render('signin', {
+		title: '登录页面'
+	})
+}
+
 //signup
 exports.signup = function(req, res){
 	var _user = req.body.user;
@@ -10,7 +22,7 @@ exports.signup = function(req, res){
 		}
 
 		if(user){
-			return res.redirect('/');
+			return res.redirect('/signin');
 		}else{
 			var user = new User(_user);
 
@@ -18,7 +30,7 @@ exports.signup = function(req, res){
 				if(err){
 					console.log(err);
 				}
-				res.redirect('/admin/userlist');
+				res.redirect('/');
 			})
 		}
 	})
@@ -35,7 +47,7 @@ exports.signin = function(req, res) {
 			console.log(err);
 		}
 		if (!user) {
-			return res.redirect('/');
+			return res.redirect('/signup');
 		}
 
 		user.comparePassword(password, function(err, isMatch) {
@@ -48,6 +60,7 @@ exports.signin = function(req, res) {
 				return res.redirect('/');
 			} else {
 				console.log('password is not matched');
+				return res.redirect('/signin');
 			}
 		})
 	})
@@ -73,4 +86,37 @@ exports.list = function(req, res) {
 			users: users
 		})
 	})
+}
+
+// midware for user
+exports.signinRequired = function(req, res, next) {
+	 var user = req.session.user;
+	 if (!user) {
+	 	return res.redirect('/signin');
+	 }
+	 next();
+}
+
+exports.adminRequired = function(req, res, next) {
+	var user = req.session.user;
+	if (user.role <= 10) {
+		return res.redirect('/signin');
+	}
+	next();
+}
+
+// list delete user
+exports.del = function(req, res) {
+	var id = req.query.id;
+
+	if (id) {
+		User.remove({_id: id}, function(err, user) {
+			if (err) {
+				console.log(err);
+				res.json({success: 0});
+			} else {
+				res.json({success: 1});
+			}
+		})
+	}
 }
