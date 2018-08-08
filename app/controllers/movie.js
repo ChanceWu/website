@@ -8,6 +8,11 @@ var path = require('path');
 // detail page
 exports.detail = function(req, res) {
 	var id = req.params.id;
+	Movie.update({_id: id}, {$inc: {pv: 1}}, function(err){
+		if(err){
+			console.log(err);
+		}
+	});
 	Movie.findById(id, function(err, movie) {
 		Comment
 			.find({movie: id})
@@ -20,10 +25,9 @@ exports.detail = function(req, res) {
 					title: 'imooc 详情页',
 					movie: movie,
 					comments: comments
-				})
-			})
-		
-	})
+				});
+			});
+	});
 }
 
 // admin new page
@@ -85,7 +89,7 @@ exports.save = function(req, res) {
 	if(req.poster){
 		movieObj.poster = req.poster;
 	}
-	
+
 	if (id) {
 		Movie.findById(id, function(err, movie) {
 			if (err) {
