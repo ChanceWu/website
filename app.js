@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var logger = require('morgan');
+var serveStatic = require('serve-static');
 var path = require('path');
 var mongoose = require('mongoose');
 var mongoStore = require('connect-mongo')(expressSession);
@@ -18,13 +19,16 @@ app.use(bodyParser());
 app.use(cookieParser());
 app.use(expressSession({
 	secret: 'imooc',
+	resave: false,
+	saveUninitialized: true,
 	store: new mongoStore({
 		url: dbUrl,
 		collection: 'sessions'
 	})
 }));
 
-if ('development' === app.get('env')) {
+var env = process.env.NODE_ENV || 'development';
+if ('development' === env) {
 	app.set('showStackError', true);
 	app.use(logger(':method :url :status'));
 	app.locals.pretty = true;
@@ -33,7 +37,7 @@ if ('development' === app.get('env')) {
 
 require('./config/routes')(app);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(serveStatic(path.join(__dirname, 'public')));
 app.locals.moment = require('moment');
 app.listen(port);
 
